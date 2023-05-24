@@ -1,0 +1,98 @@
+# CS 410 Final Project
+
+* Author: Matt Rockenhaus, Daniel Cornell
+* Class: CS410/510
+* Semester: Spring 2022
+
+## Overview
+
+This program is a school management system using the JDBC library to
+interact with a mySQL DBMS. In schema.sql is the schema for our Database
+as well as in model.pdf the ER model for our SQL schema can be found.
+
+The system has descriptions with usage throughout that help guide the
+user in being able to add class, grades, students, and categorize
+their classes. Our system also allows for adding weight to different
+categories (Assignments, Test, etc) for grade calculation.
+
+NOTE: Class CS410 FA22 Section 3 has a complete dataset for grader testing
+
+## Implementation
+
+Originally the user is presented with the choices of creating,
+selecting, and listing the classes in the system. The class select
+has three levels of specificity to help select classes based on name
+alone, name and term, and then finally name, term, and section number.
+There is also an option to terminate the program if the user decides.
+
+If the user selects a class they are provided with many options focused on the
+selected class that were implemented in the following ways:
+
+show-categories – list the categories with their weights
+Lists out the cattegories through a SELECT query followed by a loop over the
+dataset to output to the console
+
+add-category Name weight – add a new category
+Performs a simple SQL insert call to add a new category to the DB
+
+show-assignment – list the assignments with their point values, grouped by category
+Lists out the assignments through a SELECT query followed by a loop over the
+dataset to output to the console
+
+add-assignment name Category Description points – add a new assignment
+Adds an assignment to the DB by using a INSERT statement
+
+add-student username student_id Last First — adds a student and enrolls
+them in the current class. If the student already exists, enroll them in the class; if the
+name provided does not match their stored name, update the name but print a warning
+that the name is being changed.
+
+add-student username — enrolls an already-existing student in the current class. If
+the specified student does not exist, report an error. This is done by a simple
+INSERT statement.
+
+show-students – show all students in the current class
+This is done by a SELECT query on the Student table Joined with the enrolled_in table
+It then filters by the current classID
+
+show-students string – show all students with ‘string’ in their name or username
+(case-insensitive)
+This is done by a SELECT query over the Student table and JOINed with the enrolled_in
+table.  Then it uses LIKE to search through each of the usernames, first names, and last names
+looking for any that contain the 'string'.
+
+grade assignment_name username grade – assign the grade ‘grade’ for student
+with user name ‘username’ for assignment ‘assignment_name’. If the student already has a
+grade for that assignment, replace it. If the number of points exceeds the number of
+points configured for the assignment, print a warning (showing the number of points
+configured).
+Implemented by using a JOINING of multiple tables to check the validity
+of the username and assignment name. Then checks if the assignment already has
+a grade or not. Then updates the grade to the new grade value.
+
+student-grades username – show student’s current grade: all assignments, visually
+grouped by category, with the student’s grade (if they have one). Show subtotals for each
+category, along with the overall grade in the class.
+Implemented by first using a SELECT query with multiple JOIN's to list
+the assignments and grades for the student. Then outputs the total grade which
+is the grade regardless of whether all assignments have been graded. Then outputs the
+attempted grade which is the grade for all assignments that have been graded. The
+grading output also takes into account the weighting of categories to show the actual
+percentage relative to weights of sections.
+
+gradebook – show the current class’s gradebook: students (username, student ID, and
+name), along with their total grades in the class.
+Implemented by getting all the students enrolled in the class and then calling student-grades
+on all of them to get the total grade and attempted grade as outlined in student-grades above.
+
+## Compiling and Using
+
+To compile our code run the following command in the main project directory
+```
+$ javac *.java
+```
+
+Run the compiled code with the command
+```
+$ java SchoolSystem
+```
